@@ -3,17 +3,43 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
 
-def linkedin_login(driver, email, password):
+def linkedin_login(email, password):
     """ Faz login no LinkedIn e retorna o navegador logado. """
-    driver.get("https://www.linkedin.com/login")
-    time.sleep(2)
+    options = webdriver.ChromeOptions()
+    options.add_argument("--start-maximized")  # Abre o navegador maximizado
+    driver = webdriver.Chrome(options=options)
 
-    email_input = driver.find_element(By.ID, "username")
-    email_input.send_keys(email)
+    try:
+        # Acessa a página de login
+        driver.get("https://www.linkedin.com/login")
+        time.sleep(2)
 
-    password_input = driver.find_element(By.ID, "password")
-    password_input.send_keys(password)
-    password_input.send_keys(Keys.RETURN)
+        # Insere email
+        email_input = driver.find_element(By.ID, "username")
+        email_input.send_keys(email)
 
-    time.sleep(3)  # Espera o login ser processado
-    return driver
+        # Insere senha
+        password_input = driver.find_element(By.ID, "password")
+        password_input.send_keys(password)
+        password_input.send_keys(Keys.RETURN)
+
+        time.sleep(3)  # Aguarda o login ser processado
+
+        # Verifica se o login foi bem-sucedido acessando a home do LinkedIn
+        if "feed" in driver.current_url:
+            print("✅ Login bem-sucedido!")
+        else:
+            print("❌ Falha no login. Verifique suas credenciais.")
+
+    except Exception as e:
+        print(f"Erro durante o login: {e}")
+
+    finally:
+        time.sleep(5)  # Tempo para visualizar o resultado antes de fechar
+        # driver.quit()
+
+# Teste direto
+EMAIL = @#$email
+PASSWORD = @#$senha
+
+linkedin_login(EMAIL, PASSWORD)
